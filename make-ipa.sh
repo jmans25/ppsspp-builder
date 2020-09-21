@@ -26,7 +26,6 @@ echo '<?xml version="1.0" encoding="UTF-8"?>
 </plist>' > ent.xml
 ldid -Sent.xml Payload/PPSSPP.app/PPSSPP
 version_number=`echo "$(git describe --tags --match="v*" | sed -e 's@-\([^-]*\)-\([^-]*\)$@-\1-\2@;s@^v@@;s@%@~@g')"`
-chown -R 1004:3 Payload
-zip -r9 ../../PPSSPP_0v${version_number}.ipa Payload/PPSSPP.app
+zip -r9 ../../PPSSPP_v${version_number}.ipa Payload/PPSSPP.app
 sed -i '' 's#if(GIT_FOUND)#if(GIT_FOUND AND EXISTS "${SOURCE_DIR}/.git/")#' ../git-version.cmake
 echo "ipa built"

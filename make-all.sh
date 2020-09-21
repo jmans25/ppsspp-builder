@@ -26,10 +26,9 @@ echo '<?xml version="1.0" encoding="UTF-8"?>
 </plist>' > ent.xml
 ldid -Sent.xml Payload/PPSSPP.app/PPSSPP
 version_number=`echo "$(git describe --tags --match="v*" | sed -e 's@-\([^-]*\)-\([^-]*\)$@-\1-\2@;s@^v@@;s@%@~@g')"`
-chown -R 1004:3 Payload
 echo "Making ipa..."
-zip -r9 ../../PPSSPP_0v${version_number}.ipa Payload/PPSSPP.app
-echo "Done, you should get the ipa now :)"
+zip -r9 ../../PPSSPP_v${version_number}.ipa Payload/PPSSPP.app
+echo "ipa built"
 echo "Making deb..."
 package_name="org.ppsspp.ppsspp-dev-latest_0v${version_number}_iphoneos-arm"
 mkdir $package_name
@@ -47,7 +46,7 @@ Depiction: https://cydia.ppsspp.org/?page/org.ppsspp.ppsspp-dev-latest
 Maintainer: Henrik Rydgård
 Author: Henrik Rydgård
 Section: Games
-Version: 0v${version_number}
+Version: v${version_number}
 " > ${package_name}/DEBIAN/control
 chmod 0755 ${package_name}/DEBIAN/control
 mkdir ${package_name}/Library
@@ -56,7 +55,6 @@ cp ../../org.ppsspp.ppsspp.png ${package_name}/Library/PPSSPPRepoIcons/org.ppssp
 chmod 0755 ${package_name}/Library/PPSSPPRepoIcons/org.ppsspp.ppsspp-dev-latest.png
 mkdir ${package_name}/Applications
 cp -a Release-iphoneos/PPSSPP.app ${package_name}/Applications/PPSSPP.app
-chown -R 1004:3 ${package_name}
 dpkg -b ${package_name} ../../${package_name}.deb
 sed -i '' 's#if(GIT_FOUND)#if(GIT_FOUND AND EXISTS "${SOURCE_DIR}/.git/")#' ../git-version.cmake
 echo "deb, ipa built"

@@ -3,8 +3,9 @@ PPSSPP builder for iOS
 
 Requirements:
 --------------
-cmake
-xcode
+cmake  
+dpkg  
+xcode  
 
 How to use it:
 --------------
