@@ -5,6 +5,7 @@ Requirements:
 --------------
 cmake  
 dpkg  
+ldid  
 xcode  
 
 How to use it:

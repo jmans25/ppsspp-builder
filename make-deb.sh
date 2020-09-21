@@ -26,7 +26,7 @@ echo '<?xml version="1.0" encoding="UTF-8"?>
 ldid -Sent.xml Release-iphoneos/PPSSPP.app/PPSSPP
 version_number=`echo "$(git describe --tags --match="v*" | sed -e 's@-\([^-]*\)-\([^-]*\)$@-\1-\2@;s@^v@@;s@%@~@g')"`
 echo ${version_number} > Release-iphoneos/PPSSPP.app/Version.txt
-package_name="org.ppsspp.ppsspp-dev-latest_0v${version_number}_iphoneos-arm"
+package_name="org.ppsspp.ppsspp-dev-latest_v${version_number}_iphoneos-arm"
 mkdir $package_name
 mkdir ${package_name}/DEBIAN
 echo "Package: org.ppsspp.ppsspp-dev-latest
@@ -42,7 +42,7 @@ Depiction: https://cydia.ppsspp.org/?page/org.ppsspp.ppsspp-dev-latest
 Maintainer: Henrik Rydgård
 Author: Henrik Rydgård
 Section: Games
-Version: v${version_number}
+Version: ${version_number}
 " > ${package_name}/DEBIAN/control
 chmod 0755 ${package_name}/DEBIAN/control
 mkdir ${package_name}/Library

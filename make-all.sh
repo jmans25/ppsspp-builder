@@ -30,7 +30,7 @@ echo "Making ipa..."
 zip -r9 ../../PPSSPP_v${version_number}.ipa Payload/PPSSPP.app
 echo "ipa built"
 echo "Making deb..."
-package_name="org.ppsspp.ppsspp-dev-latest_0v${version_number}_iphoneos-arm"
+package_name="org.ppsspp.ppsspp-dev-latest_v${version_number}_iphoneos-arm"
 mkdir $package_name
 mkdir ${package_name}/DEBIAN
 echo "Package: org.ppsspp.ppsspp-dev-latest
@@ -46,7 +46,7 @@ Depiction: https://cydia.ppsspp.org/?page/org.ppsspp.ppsspp-dev-latest
 Maintainer: Henrik Rydgård
 Author: Henrik Rydgård
 Section: Games
-Version: v${version_number}
+Version: ${version_number}
 " > ${package_name}/DEBIAN/control
 chmod 0755 ${package_name}/DEBIAN/control
 mkdir ${package_name}/Library
