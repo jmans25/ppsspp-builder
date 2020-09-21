@@ -5,18 +5,13 @@ if [[ ! -d ppsspp ]];then
 	exit 1
 fi
 
-if [[ ! -d ppsspp/build-ios/PPSSPP.xcodeproj ]];then
-	echo "Please make sure you are using the early xcode command line tools like Xcode 9.4."
-	cd ppsspp
-	mkdir build-ios
-	cd build-ios
-	cmake -DCMAKE_TOOLCHAIN_FILE=../cmake/Toolchains/ios.cmake -GXcode ..
-	echo "Done, you should change to use the latest xcode command line tools like Xcode 10.1 to complete the next steps."
-else
-	echo "Please make sure you are using the latest xcode command line tools like Xcode 10.1."
-	cd ppsspp/build-ios
-	xcodebuild clean build CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO PRODUCT_BUNDLE_IDENTIFIER="org.ppsspp.ppsspp" -sdk iphoneos -configuration Release
-	echo '<?xml version="1.0" encoding="UTF-8"?>
+cd ppsspp
+mkdir build-ios
+cd build-ios
+sed -i '' 's/if(GIT_FOUND AND EXISTS "${SOURCE_DIR}/.git/")/if(GIT_FOUND)/' ../git-version.cmake
+cmake -DCMAKE_TOOLCHAIN_FILE=../cmake/Toolchains/ios.cmake -GXcode ..
+xcodebuild clean build CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO PRODUCT_BUNDLE_IDENTIFIER="org.ppsspp.ppsspp" -sdk iphoneos -configuration Release
+echo '<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
@@ -28,13 +23,13 @@ else
 	<true/>
 </dict>
 </plist>' > ent.xml
-	ldid -Sent.xml Release-iphoneos/PPSSPP.app/PPSSPP
-	version_number=`echo "$(git describe --tags --match="v*" | sed -e 's@-\([^-]*\)-\([^-]*\)$@-\1-\2@;s@^v@@;s@%@~@g')"`
-	echo ${version_number} > Release-iphoneos/PPSSPP.app/Version.txt
-	package_name="org.ppsspp.ppsspp-dev-latest_0v${version_number}_iphoneos-arm"
-	mkdir $package_name
-	mkdir ${package_name}/DEBIAN
-	echo "Package: org.ppsspp.ppsspp-dev-latest
+ldid -Sent.xml Release-iphoneos/PPSSPP.app/PPSSPP
+version_number=`echo "$(git describe --tags --match="v*" | sed -e 's@-\([^-]*\)-\([^-]*\)$@-\1-\2@;s@^v@@;s@%@~@g')"`
+echo ${version_number} > Release-iphoneos/PPSSPP.app/Version.txt
+package_name="org.ppsspp.ppsspp-dev-latest_0v${version_number}_iphoneos-arm"
+mkdir $package_name
+mkdir ${package_name}/DEBIAN
+echo "Package: org.ppsspp.ppsspp-dev-latest
 Name: PPSSPP (Dev-Latest)
 Architecture: iphoneos-arm
 Description: A PSP emulator 
@@ -49,14 +44,14 @@ Author: Henrik Rydgård
 Section: Games
 Version: 0v${version_number}
 " > ${package_name}/DEBIAN/control
-	chmod 0755 ${package_name}/DEBIAN/control
-	mkdir ${package_name}/Library
-	mkdir ${package_name}/Library/PPSSPPRepoIcons
-	cp ../../org.ppsspp.ppsspp.png ${package_name}/Library/PPSSPPRepoIcons/org.ppsspp.ppsspp-dev-latest.png
-	chmod 0755 ${package_name}/Library/PPSSPPRepoIcons/org.ppsspp.ppsspp-dev-latest.png
-	mkdir ${package_name}/Applications
-	cp -a Release-iphoneos/PPSSPP.app ${package_name}/Applications/PPSSPP.app
-	chown -R 1004:3 ${package_name}
-	dpkg -b ${package_name} ../../${package_name}.deb
-	echo "Done, you should get the deb now :)"
-fi
+chmod 0755 ${package_name}/DEBIAN/control
+mkdir ${package_name}/Library
+mkdir ${package_name}/Library/PPSSPPRepoIcons
+cp ../../org.ppsspp.ppsspp.png ${package_name}/Library/PPSSPPRepoIcons/org.ppsspp.ppsspp-dev-latest.png
+chmod 0755 ${package_name}/Library/PPSSPPRepoIcons/org.ppsspp.ppsspp-dev-latest.png
+mkdir ${package_name}/Applications
+cp -a Release-iphoneos/PPSSPP.app ${package_name}/Applications/PPSSPP.app
+chown -R 1004:3 ${package_name}
+dpkg -b ${package_name} ../../${package_name}.deb
+sed -i '' 's/if(GIT_FOUND)/if(GIT_FOUND AND EXISTS "${SOURCE_DIR}/.git/")/' ../git-version.cmake
+echo "deb built"
