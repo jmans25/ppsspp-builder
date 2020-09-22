@@ -40,8 +40,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./PPSSPP_${{ github.ref }}.ipa
-          asset_name: PPSSPP_${{ github.ref }}.ipa
+          asset_path: ./PPSSPP_${{ github.event.release.tag_name }}.ipa
+          asset_name: PPSSPP_${{ github.event.release.tag_name }}.ipa
           asset_content_type: application/octet-stream
       - name: Upload PPSSPP deb
         id: upload-ppsspp-deb
@@ -50,6 +50,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./org.ppsspp.ppsspp-dev-latest_v${{ github.ref }}_iphoneos-arm.deb
-          asset_name: org.ppsspp.ppsspp-dev-latest_v${{ github.ref }}_iphoneos-arm.deb
+          asset_path: ./org.ppsspp.ppsspp-dev-latest_v${{ github.event.release.tag_name }}_iphoneos-arm.deb
+          asset_name: org.ppsspp.ppsspp-dev-latest_v${{ github.event.release.tag_name }}_iphoneos-arm.deb
           asset_content_type: application/x-debian-package
