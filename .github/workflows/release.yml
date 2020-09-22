@@ -23,6 +23,9 @@ jobs:
           path: |
             *.ipa
             *.deb
+      - name: Get the version
+        id: get_version
+        run: echo ::set-output name=VERSION::${GITHUB_REF#refs/tags/}
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
@@ -40,8 +43,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./PPSSPP_${GITHUB_REF##*/}.ipa
-          asset_name: PPSSPP_${GITHUB_REF##*/}.ipa
+          asset_path: ./PPSSPP_${{ steps.get_version.outputs.VERSION }}.ipa
+          asset_name: PPSSPP_${{ steps.get_version.outputs.VERSION }}.ipa
           asset_content_type: application/octet-stream
       - name: Upload PPSSPP deb
         id: upload-ppsspp-deb
@@ -50,6 +53,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./org.ppsspp.ppsspp-dev-latest_v${GITHUB_REF##*/}_iphoneos-arm.deb
-          asset_name: org.ppsspp.ppsspp-dev-latest_v${GITHUB_REF##*/}_iphoneos-arm.deb
+          asset_path: ./org.ppsspp.ppsspp-dev-latest_v${{ steps.get_version.outputs.VERSION }}_iphoneos-arm.deb
+          asset_name: org.ppsspp.ppsspp-dev-latest_v${{ steps.get_version.outputs.VERSION }}_iphoneos-arm.deb
           asset_content_type: application/x-debian-package
