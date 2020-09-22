@@ -1,0 +1,66 @@
+name: CI
+on:
+  push:
+    tags:
+      '*'
+
+jobs:
+  build:
+    name: Build ipa and deb
+    runs-on: macOS-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v1
+      - name: Update submodules
+        run: git submodule update --init --recursive
+      - name: Install dependencies
+        run: brew install dpkg ldid
+      - name: Build using cmake
+        run: make all
+      - uses: actions/upload-artifact@v2
+        with:
+          name: ppsspp-binaries
+          path: |
+            *.ipa
+            *.deb
+
+  publish:
+    name: Publish Release
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v1
+      - uses: actions/download-artifact@v2
+        with:
+          name: ppsspp-binaries
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: ${{ github.ref }}
+          draft: false
+          prerelease: false
+      - name: Upload PPSSPP ipa
+        id: upload-ppsspp-ipa
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./PPSSPP_${{ github.ref }}.ipa
+          asset_name: PPSSPP_${{ github.ref }}.ipa
+          asset_content_type: application/octet-stream
+      - name: Upload PPSSPP deb
+        id: upload-ppsspp-deb
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./org.ppsspp.ppsspp-dev-latest_v${{ github.ref }}_iphoneos-arm.deb
+          asset_name: org.ppsspp.ppsspp-dev-latest_v${{ github.ref }}_iphoneos-arm.deb
+          asset_content_type: application/x-debian-package
