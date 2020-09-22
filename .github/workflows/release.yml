@@ -23,17 +23,6 @@ jobs:
           path: |
             *.ipa
             *.deb
-
-  publish:
-    name: Publish Release
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v1
-      - uses: actions/download-artifact@v2
-        with:
-          name: ppsspp-binaries
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
