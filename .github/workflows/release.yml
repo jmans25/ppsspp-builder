@@ -53,6 +53,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./org.ppsspp.ppsspp-dev-latest_v${{ steps.get_version.outputs.VERSION }}_iphoneos-arm.deb
-          asset_name: org.ppsspp.ppsspp-dev-latest_v${{ steps.get_version.outputs.VERSION }}_iphoneos-arm.deb
+          asset_path: ./org.ppsspp.ppsspp-dev-latest_${{ steps.get_version.outputs.VERSION }}_iphoneos-arm.deb
+          asset_name: org.ppsspp.ppsspp-dev-latest_${{ steps.get_version.outputs.VERSION }}_iphoneos-arm.deb
           asset_content_type: application/x-debian-package
