@@ -6,11 +6,15 @@ if [[ ! -d ppsspp ]];then
 fi
 
 cd ppsspp
+rm -rf build-ios
 mkdir build-ios
 cd build-ios
 sed -i '' 's#if(GIT_FOUND AND EXISTS "${SOURCE_DIR}/.git/")#if(GIT_FOUND)#' ../git-version.cmake
+sed -i '' 's#set(IPHONEOS_DEPLOYMENT_TARGET 6.0)#set(IPHONEOS_DEPLOYMENT_TARGET 12.0)#' ../cmake/Toolchains/ios.cmake
+sed -i '' 's#set(DEPLOYMENT_TARGET 8.0)#set(DEPLOYMENT_TARGET 12.0)#' ../CMakeLists.txt
+sed -i '' 's#set(IOS_ARCH "armv7;arm64")#set(IOS_ARCH ${ARCH_STANDARD_64_BIT})#' ../cmake/Toolchains/ios.cmake
 cmake -DCMAKE_TOOLCHAIN_FILE=../cmake/Toolchains/ios.cmake -GXcode ..
-xcodebuild clean build CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO PRODUCT_BUNDLE_IDENTIFIER="org.ppsspp.ppsspp" -sdk iphoneos -configuration Release
+xcodebuild build CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO PRODUCT_BUNDLE_IDENTIFIER="org.ppsspp.ppsspp" -sdk iphoneos -configuration Release -UseModernBuildSystem=0
 ln -sf Release-iphoneos Payload
 echo '<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
@@ -57,4 +61,7 @@ mkdir ${package_name}/Applications
 cp -a Release-iphoneos/PPSSPP.app ${package_name}/Applications/PPSSPP.app
 dpkg -b ${package_name} ../../${package_name}.deb
 sed -i '' 's#if(GIT_FOUND)#if(GIT_FOUND AND EXISTS "${SOURCE_DIR}/.git/")#' ../git-version.cmake
+sed -i '' 's#set(IPHONEOS_DEPLOYMENT_TARGET 12.0)#set(IPHONEOS_DEPLOYMENT_TARGET 6.0)#' ../cmake/Toolchains/ios.cmake
+sed -i '' 's#set(DEPLOYMENT_TARGET 12.0)#set(DEPLOYMENT_TARGET 8.0)#' ../CMakeLists.txt
+sed -i '' 's#set(IOS_ARCH ${ARCH_STANDARD_64_BIT})#set(IOS_ARCH "armv7;arm64")#' ../cmake/Toolchains/ios.cmake
 echo "deb, ipa built"
