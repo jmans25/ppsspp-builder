@@ -18,8 +18,6 @@ echo '<?xml version="1.0" encoding="UTF-8"?>
 <dict>
 	<key>platform-application</key>
 	<true/>
-	<key>com.apple.private.security.no-container</key>
-	<true/>
 	<key>get-task-allow</key>
 	<true/>
 </dict>
