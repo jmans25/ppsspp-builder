@@ -10,7 +10,7 @@ mkdir build-ios
 cd build-ios
 /bin/bash -c "sudo xcode-select -s /Applications/Xcode_11.7.app/Contents/Developer"
 sed -i '' 's#if(GIT_FOUND AND EXISTS "${SOURCE_DIR}/.git/")#if(GIT_FOUND)#' ../git-version.cmake
-cmake -DCMAKE_TOOLCHAIN_FILE=../cmake/Toolchains/ios.cmake -GXcode .. -- CODE_SIGNING_REQUIRED=NO
+cmake -DCMAKE_TOOLCHAIN_FILE=../cmake/Toolchains/ios.cmake -GXcode ..
 xcodebuild clean build CODE_SIGNING_REQUIRED=NO PRODUCT_BUNDLE_IDENTIFIER="org.ppsspp.ppsspp" -sdk iphoneos -configuration Release # CODE_SIGN_IDENTITY=""
 ln -sf Release-iphoneos Payload
 version_number=`echo "$(git describe --tags --match="v*" | sed -e 's@-\([^-]*\)-\([^-]*\)$@-\1-\2@;s@^v@@;s@%@~@g')"`
